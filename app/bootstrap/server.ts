@@ -1,12 +1,16 @@
 import http from 'http';
 import app from './app';
 import { WebSocketServer } from 'ws';
+import { handleMediaConnection } from './connections.ts';
 
 const PORT = Number(process.env.PORT) || 3000;
 
-// Attach HTTP + WS servers
+// Create HTTP server from Express
 const server = http.createServer(app);
-new WebSocketServer({ server, path: '/media' /* …etc… */ });
+
+// WebSocket server for Twilio Media Streams
+const wss = new WebSocketServer({ server, path: '/media' });
+wss.on('connection', handleMediaConnection);
 
 server.listen(PORT, () => {
   console.log(`🚀 Listening on http://localhost:${PORT}`);

@@ -1,13 +1,15 @@
 // Type definitions for Deepgram messages
-interface DeepgramAlternative {
+export interface DeepgramAlternative {
   transcript: string;
 }
 
-interface DeepgramChannel {
+export interface DeepgramChannel {
   alternatives: DeepgramAlternative[];
 }
 
-interface DeepgramMessage {
+export interface DeepgramMessage {
   channel?: DeepgramChannel;
   is_final?: boolean;
 }
+
+

@@ -1,9 +1,9 @@
 // Type definitions for Twilio Media Streams events
-interface TwilioMedia {
+export interface TwilioMedia {
   payload: string;
 }
 
-interface TwilioEvent {
+export interface TwilioEvent {
   event: 'start' | 'media' | 'stop';
   media?: TwilioMedia;
 }
