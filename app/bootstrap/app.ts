@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import express, { Request, Response } from 'express';
-import { synthesizeSpeech } from '@/features/eleven-labs';
+import { synthesizeSpeech } from '../features/eleven-labs';
 import path from 'path';
 
 const app = express();

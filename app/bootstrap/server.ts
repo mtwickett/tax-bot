@@ -2,7 +2,7 @@ import http from 'http';
 import app from './app';
 import { WebSocketServer } from 'ws';
 import { handleMediaConnection } from './connections';
-import { synthesizeSpeech } from '@/features/eleven-labs';
+import { synthesizeSpeech } from '../features/eleven-labs';
 
 const PORT = Number(process.env.PORT) || 3000;
 
