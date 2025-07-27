@@ -1,4 +1,4 @@
-import http from 'http';
+import * as http from 'http';
 import app from './app';
 import { WebSocketServer } from 'ws';
 import { handleMediaConnection } from './connections';

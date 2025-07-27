@@ -35,7 +35,7 @@ export const handleMediaConnection = (ws: WebSocket) => {
     if (msg.is_final) {
       try {
         await axios.post(
-          'https://mtwickett.app.n8n.cloud/webhook/tax-recording',
+          'https://mtwickett.app.n8n.cloud/webhook/tax-bot',
           { transcript: alt, caller: 'someCallerId' }
         );
         console.log('📤 Sent transcript to n8n');
