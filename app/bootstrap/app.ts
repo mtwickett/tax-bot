@@ -14,15 +14,19 @@ app.get('/', (_req: Request, res: Response) => {
   res.send('✅ Express server running');
 });
 
-app.post('/webhook/tax-bot', (req: Request, res: Response) => {
+app.post('/webhook/start', (req: Request, res: Response) => {
   console.log('📞 Twilio webhook hit:', req.body);
   const twiml = `
     <Response>
+      <Start>
+        <Stream url="wss://ed084b81fe09.ngrok-free.app/media" />
+      </Start>
       <Play>https://ed084b81fe09.ngrok-free.app/audio/greeting.mp3</Play>
-      <Redirect>https://ed084b81fe09.ngrok-free.app/webhook/tax-bot</Redirect>
+      
+      <Pause length="60"/>
     </Response>
   `;
-  res.type('text/xml').send(twiml);
+  res.type('text/xml').send(twiml.trim());
 });
 
 app.post('/response', async (req: Request, res: Response) => {
