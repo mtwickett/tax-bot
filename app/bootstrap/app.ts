@@ -16,7 +16,13 @@ app.get('/', (_req: Request, res: Response) => {
 
 app.post('/webhook/start', (req: Request, res: Response) => {
   console.log('📞 Twilio webhook hit:', req.body);
-  res.type('text/xml').send('<Response></Response>');
+  const twiml = `
+    <Response>
+      <Play>https://34a516a130ad.ngrok-free.app/audio/greeting.mp3</Play>
+      <Redirect>https://34a516a130ad.ngrok-free.app/webhook/tax-bot</Redirect>
+    </Response>
+  `;
+  res.type('text/xml').send(twiml);
 });
 
 app.post('/response', async (req: Request, res: Response) => {

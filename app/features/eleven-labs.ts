@@ -6,9 +6,8 @@ import { Readable } from "stream";
 // Initialize the client with your API key
 const client = new ElevenLabsClient({ apiKey: process.env.ELEVEN_LABS_API_KEY });
 
-export const synthesizeSpeech = async (text: string) => {
+export const synthesizeSpeech = async (text: string, fileName = "./public/response.mp3") => {
   const voiceId = "ThT5KcBeYPX3keUQqHPh"; // Dorothy
-  const fileName = "public/response.mp3";
   try {
     const res = await client.textToSpeech.convert(voiceId, {
         text,
