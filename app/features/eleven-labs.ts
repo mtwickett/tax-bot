@@ -6,13 +6,12 @@ import { Readable } from "stream";
 // Initialize the client with your API key
 const client = new ElevenLabsClient({ apiKey: process.env.ELEVEN_LABS_API_KEY });
 
-const synthesizeSpeech = async () => {
+export const synthesizeSpeech = async (text: string) => {
   const voiceId = "ThT5KcBeYPX3keUQqHPh"; // Dorothy
-  const text = "Hello, thank you for calling Sentry Tax. How can I help you today?";
-  const fileName = "response.mp3";
+  const fileName = "public/response.mp3";
   try {
     const res = await client.textToSpeech.convert(voiceId, {
-        text: text,
+        text,
         modelId: "eleven_multilingual_v2"
     });
 
@@ -21,22 +20,22 @@ const synthesizeSpeech = async () => {
     const reader = res.getReader();
     const nodeStream = new Readable({
         async read() {
-        const { done, value } = await reader.read();
-        if (done) {
+          const { done, value } = await reader.read();
+          if (done) {
             this.push(null);
-        } else {
-            this.push(Buffer.from(value));
-        }
+          } else {
+              this.push(Buffer.from(value));
+          }
         },
     });
 
 
     // Save stream to file
-    const writer = fs.createWriteStream(fileName);
+    const writer = fs.createWriteStream(`public/${fileName}`);
     nodeStream.pipe(writer);
 
     writer.on("finish", () => {
-      console.log(`✅ MP3 saved as ${fileName}`);
+      console.log(`✅ MP3 saved as public/${fileName}`);
     });
 
     writer.on("error", err => {
@@ -48,5 +47,5 @@ const synthesizeSpeech = async () => {
   }
 }
 
-synthesizeSpeech();
+
 
