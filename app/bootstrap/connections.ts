@@ -2,7 +2,7 @@ import WebSocket from 'ws';
 import axios from 'axios';
 
 import { DeepgramMessage } from '@/types/deepgram';
-import { TwilioEvent } from '@types/twilio';
+import { TwilioEvent } from '@/types/twilio';
 
 
 export const handleMediaConnection = (ws: WebSocket) => {

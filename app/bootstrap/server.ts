@@ -1,7 +1,7 @@
 import http from 'http';
 import app from './app';
 import { WebSocketServer } from 'ws';
-import { handleMediaConnection } from './connections.ts';
+import { handleMediaConnection } from './connections';
 
 const PORT = Number(process.env.PORT) || 3000;
 
