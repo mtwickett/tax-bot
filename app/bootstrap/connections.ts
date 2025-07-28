@@ -29,6 +29,7 @@ export const handleMediaConnection = (ws: WebSocket) => {
   dgSocket.on('message', async raw => {
     const msg = JSON.parse(raw.toString()) as DeepgramMessage;
     const alt = msg.channel?.alternatives?.[0]?.transcript?.trim();
+    console.log(alt)
     if (!alt) return;
 
     console[msg.is_final ? 'log' : 'log'](

@@ -22,7 +22,7 @@ app.post('/webhook/start', (req: Request, res: Response) => {
       <Start>
         <Stream url="wss://${process.env.NGROK_DOMAIN}/media" />
       </Start>
-      <Play>https://${process.env.NGROK_DOMAIN}/greeting.mp3</Play>
+      <Play>https://${process.env.NGROK_DOMAIN}/audio/greeting.mp3</Play>
       <Pause length="60"/>
     </Response>
   `;
