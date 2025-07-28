@@ -16,6 +16,9 @@ export const handleMediaConnection = (ws: WebSocket) => {
     { headers: { Authorization: `Token ${process.env.DEEPGRAM_API_KEY}` } }
   );
 
+  let currentTranscript = '';
+  let debounceTimer: NodeJS.Timeout | null = null;
+
   dgSocket.on('open', () => {
     console.log('🔗 Connected to Deepgram');
     deepgramReady = true;
@@ -25,23 +28,35 @@ export const handleMediaConnection = (ws: WebSocket) => {
 
   dgSocket.on('message', async raw => {
     const msg = JSON.parse(raw.toString()) as DeepgramMessage;
-    const alt = msg.channel?.alternatives?.[0]?.transcript;
+    const alt = msg.channel?.alternatives?.[0]?.transcript?.trim();
     if (!alt) return;
 
-    console[ msg.is_final ? 'log' : 'log' ](
+    console[msg.is_final ? 'log' : 'log'](
       msg.is_final ? '✅ Final:' : '⏳ Interim:', alt
     );
 
     if (msg.is_final) {
-      try {
-        await axios.post(
-          'https://mtwickett.app.n8n.cloud/webhook/tax-bot',
-          { transcript: alt, caller: 'someCallerId' }
-        );
-        console.log('📤 Sent transcript to n8n');
-      } catch (e) {
-        console.error('❌ Error sending to n8n:', (e as Error).message);
-      }
+      currentTranscript += ` ${alt}`;
+
+      if (debounceTimer) clearTimeout(debounceTimer);
+
+      debounceTimer = setTimeout(async () => {
+        const finalText = currentTranscript.trim();
+        if (!finalText) return;
+
+        try {
+          await axios.post(
+            'https://mtwickett.app.n8n.cloud/webhook/tax-bot',
+            { transcript: finalText, caller: 'someCallerId' }
+          );
+          console.log('📤 Sent full transcript to n8n:', finalText);
+        } catch (e) {
+          console.error('❌ Error sending to n8n:', (e as Error).message);
+        }
+
+        currentTranscript = '';
+        debounceTimer = null;
+      }, 1500); // Wait 1.5s before sending full thought
     }
   });
 
@@ -61,5 +76,6 @@ export const handleMediaConnection = (ws: WebSocket) => {
   ws.on('close', () => {
     console.log('❌ Twilio WebSocket closed');
     dgSocket.close();
+    if (debounceTimer) clearTimeout(debounceTimer);
   });
-}
+};

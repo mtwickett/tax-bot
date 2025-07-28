@@ -13,7 +13,7 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: '/media' });
 wss.on('connection', handleMediaConnection);
 
-synthesizeSpeech("Hello, thank you for calling Sentry Tax. How can I help you today?", "greeting.mp3")
+synthesizeSpeech("Hello", "greeting.mp3")
   .then(() => {
     server.listen(PORT, () => {
       console.log(`🚀 Listening on http://localhost:${PORT}`);

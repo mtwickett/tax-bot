@@ -30,12 +30,12 @@ export const synthesizeSpeech = async (text: string, fileName = "response.mp3") 
     });
 
     // Save stream to file
-    const outputPath = path.join(__dirname, '..', 'public', fileName);
+    const outputPath = path.join(__dirname, '..', '..', 'public', fileName);
     const writer = fs.createWriteStream(outputPath);
     nodeStream.pipe(writer);
 
     writer.on("finish", () => {
-      console.log(`✅ MP3 saved as public/${fileName}`);
+      console.log(`✅ MP3 saved as ${fileName}`);
     });
 
     writer.on("error", err => {
