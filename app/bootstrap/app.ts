@@ -9,7 +9,6 @@ app.use(express.urlencoded({ extended: false }));
 
 // Serve static MP3 files from the /public directory
 app.use('/audio', express.static(path.join(__dirname, '..', '..', 'public')));
-console.log(`path ------> ${path.join(__dirname, '..', '..')}`)
 
 app.get('/', (_req: Request, res: Response) => {
   res.send('✅ Express server running');
