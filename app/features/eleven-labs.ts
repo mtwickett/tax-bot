@@ -2,11 +2,12 @@ import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
 import "dotenv/config";
 import fs from "fs";
 import { Readable } from "stream";
+import path from 'path';
 
 // Initialize the client with your API key
 const client = new ElevenLabsClient({ apiKey: process.env.ELEVEN_LABS_API_KEY });
 
-export const synthesizeSpeech = async (text: string, fileName = "./public/response.mp3") => {
+export const synthesizeSpeech = async (text: string, fileName = "response.mp3") => {
   const voiceId = "ThT5KcBeYPX3keUQqHPh"; // Dorothy
   try {
     const res = await client.textToSpeech.convert(voiceId, {
@@ -28,9 +29,9 @@ export const synthesizeSpeech = async (text: string, fileName = "./public/respon
         },
     });
 
-
     // Save stream to file
-    const writer = fs.createWriteStream(`public/${fileName}`);
+    const outputPath = path.join(__dirname, '..', 'public', fileName);
+    const writer = fs.createWriteStream(outputPath);
     nodeStream.pipe(writer);
 
     writer.on("finish", () => {
