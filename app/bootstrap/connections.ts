@@ -4,10 +4,10 @@ import axios from 'axios';
 import { DeepgramMessage } from '@/types/deepgram';
 import { TwilioEvent } from '@/types/twilio';
 
-
 export const handleMediaConnection = (ws: WebSocket) => {
   console.log('🔌 Twilio WebSocket connected');
 
+ 
   let deepgramReady = false;
   const audioBuffer: Buffer[] = [];
 
