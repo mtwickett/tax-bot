@@ -4,20 +4,20 @@ import fs from "fs";
 import { Readable } from "stream";
 import path from 'path';
 
-// Initialize the client with your API key
+
 const client = new ElevenLabsClient({ apiKey: process.env.ELEVEN_LABS_API_KEY });
 
 export const synthesizeSpeech = async (text: string, fileName = "response.mp3") => {
-  const voiceId = "ThT5KcBeYPX3keUQqHPh"; // Dorothy
+  const voiceId = process.env.ELEVEN_LABS_VOICE_ID!; // Dorothy
   try {
-    const res = await client.textToSpeech.convert(voiceId, {
+    const audiostream = await client.textToSpeech.convert(voiceId, {
         text,
         modelId: "eleven_multilingual_v2"
     });
 
 
     // Convert Web ReadableStream to Node.js Readable
-    const reader = res.getReader();
+    const reader = audiostream.getReader();
     const nodeStream = new Readable({
         async read() {
           const { done, value } = await reader.read();
@@ -32,14 +32,17 @@ export const synthesizeSpeech = async (text: string, fileName = "response.mp3") 
     // Save stream to file
     const outputPath = path.join(__dirname, '..', '..', 'public', fileName);
     const writer = fs.createWriteStream(outputPath);
-    nodeStream.pipe(writer);
 
-    writer.on("finish", () => {
-      console.log(`✅ MP3 saved as ${fileName}`);
-    });
-
-    writer.on("error", err => {
-      console.error("❌ File write error:", err);
+    return new Promise<void>((resolve, reject) => {
+      nodeStream.pipe(writer);
+      writer.on("finish", () => {
+        console.log(`✅ MP3 saved as ${fileName}`);
+        resolve();
+      });
+      writer.on("error", (err) => {
+        console.error("❌ File write error:", err);
+        reject(err);
+      });
     });
 
   } catch (error) {

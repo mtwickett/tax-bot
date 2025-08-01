@@ -1,10 +1,10 @@
 import OpenAI from "openai";
-const client = new OpenAI();
 
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY;
+});
 
-export const response = await client.responses.create({
-    model: "gpt-4.1",
-    input: `
+const prompt = `
           You are a friendly and knowledgeable U.S. tax assistant. 
           Answer common individual tax questions clearly, briefly, 
           and in a conversational tone, as if you're helping someone 
@@ -16,6 +16,14 @@ export const response = await client.responses.create({
           A: Yes, but only if you're self-employed. W-2 employees can't deduct home office 
           expenses since 2018. You must use the space regularly and exclusively for work to qualify.
           `
+
+
+let conversation = [];
+
+export const response = await client.responses.create({
+    model: "gpt-4.1",
+    input: 
 });
+
 
 console.log(response.output_text);
