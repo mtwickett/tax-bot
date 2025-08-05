@@ -2,7 +2,7 @@ import express from 'express';
 import http from 'http'; 
 import path from 'path';
 import { WebSocketServer } from 'ws';
-import { twilioStream } from '@/twilio/twilio-ws';
+import { twilioStream } from '../twilio/twilio-ws';
 
 
 const app = express();

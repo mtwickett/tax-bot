@@ -1,5 +1,5 @@
 import { WebSocketServer, WebSocket } from 'ws';
-import { streamTTS } from '@/deepgram/TTS';
+import { streamTTS } from '../deepgram/TTS';
 
 
 export const twilioStream = (wss: WebSocketServer) => {
