@@ -16,6 +16,7 @@ const server = http.createServer(app);
 // Express WebSocketServer for Twilio Media Streams Websocket
 const wss = new WebSocketServer({ server, path: '/audiostream' });
 
+// manage twilio connection
 twilioStream(wss);
 
 server.listen(PORT, () => {

@@ -1,6 +1,6 @@
 import { app } from '@/bootstrap/app';
 import { twiml } from 'twilio';
-import { Request, Response } from 'express'; 
+import { Request, Response } from 'express';
 
 
 app.post('/webhook/greeting', (req: Request, res: Response) => {

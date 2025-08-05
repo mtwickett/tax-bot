@@ -1,5 +1,5 @@
 import { WebSocketServer, WebSocket } from 'ws';
-import { wss } from '@/bootstrap/app';
+import { streamTTS } from '@/deepgram/TTS';
 
 
 export const twilioStream = (wss: WebSocketServer) => {
@@ -21,7 +21,7 @@ export const twilioStream = (wss: WebSocketServer) => {
           case 'start':
             twilioStreamSid = msg.streamSid;
             console.log(`▶️ Stream started (SID: ${twilioStreamSid})`);
-            // You can now initiate Deepgram STT or call streamTTS if bot should talk first
+            streamTTS('Hello')
             break;
 
           case 'media':
