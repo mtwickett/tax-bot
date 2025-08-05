@@ -1,45 +1,27 @@
-import 'dotenv/config';
-import express, { Request, Response } from 'express';
-import { synthesizeSpeech } from '../features/eleven-labs';
+import express from 'express';
+import http from 'http'; 
 import path from 'path';
+import { WebSocketServer } from 'ws';
+import { twilioStream } from '@/twilio/twilio-ws';
+
 
 const app = express();
-app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-// Serve static MP3 files from the /public directory
 app.use('/audio', express.static(path.join(__dirname, '..', '..', 'public')));
+const PORT = Number(process.env.PORT) || 3000;
 
-app.get('/', (_req: Request, res: Response) => {
-  res.send('✅ Express server running');
+// Express server
+const server = http.createServer(app);
+
+// Express WebSocketServer for Twilio Media Streams Websocket
+const wss = new WebSocketServer({ server, path: '/audiostream' });
+
+twilioStream(wss);
+
+server.listen(PORT, () => {
+  console.log(`Listening on http://localhost:${PORT}`);
+}).on('error', (err) => {
+  console.error('Server failed to start:', err);
 });
 
-app.post('/webhook/start', (req: Request, res: Response) => {
-  console.log('📞 Twilio webhook hit:', req.body);
-  const twiml = `
-    <?xml version="1.0" encoding="UTF-8"?>
-    <Response>
-      <Start>
-        <Stream url="wss://${process.env.NGROK_DOMAIN}/media" />
-      </Start>
-      <Play>https://${process.env.NGROK_DOMAIN}/audio/greeting.mp3</Play>
-      <Pause length="60"/>
-    </Response>
-  `;
-  res.type('application/xml').send(twiml.trim());
-});
-
-app.post('/response', async (req: Request, res: Response) => {
-  const { reply } = req.body;
-  console.log('🤖 Received reply from n8n:', reply);
-
-  try {
-    await synthesizeSpeech(reply);
-    res.status(200).send('OK');
-  } catch (err) {
-    console.error('❌ Error synthesizing speech:', err);
-    res.status(500).send('Error');
-  }
-});
-
-export default app;
+export { app, wss };

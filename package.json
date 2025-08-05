@@ -8,8 +8,10 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@deepgram/sdk": "^4.11.1",
     "@elevenlabs/elevenlabs-js": "^2.7.0",
     "axios": "^1.11.0",
+    "cross-fetch": "^4.1.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "openai": "^5.11.0",
@@ -17,6 +19,6 @@
     "ws": "^8.18.3"
   },
   "scripts": {
-    "dev": "ts-node app/bootstrap/twilio.ts"
+    "dev": "ts-node app/bootstrap/app.ts"
   }
 }
