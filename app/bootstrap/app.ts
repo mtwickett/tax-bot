@@ -5,6 +5,10 @@ import { WebSocketServer } from 'ws';
 import { twilioStream } from '../twilio/twilio-ws';
 import { twiml } from 'twilio';
 import { Request, Response } from 'express'; 
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 
 // Express app
 const app = express();
@@ -26,6 +30,7 @@ app.post('/webhook/stream', (req: Request, res: Response) => {
   const connect = response.connect();
   connect.stream({ url: `wss://${process.env.NGROK_DOMAIN}/audiostream` });
   
+  console.log('TwiML:', response.toString());
   res.type('text/xml').send(response.toString());
 });
 

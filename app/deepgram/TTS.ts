@@ -1,4 +1,7 @@
 import { createClient, LiveTTSEvents } from '@deepgram/sdk';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const DEEPGRAM_API_KEY = process.env.DEEPGRAM_API_KEY;
 
@@ -27,6 +30,10 @@ export const streamTTS = async (text: string): Promise<void> => {
 
     // Send flush message to the server after sending the text
     deepgramConnection.flush();
+
+    deepgramConnection.on(LiveTTSEvents.Close, () => {
+    console.log("Connection closed");
+    });
   });
 
   // Receive an audio chunk from Deepgram (μ-law 8kHz bytes)
