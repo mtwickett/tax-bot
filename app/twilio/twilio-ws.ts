@@ -21,7 +21,7 @@ export const twilioStream = (wss: WebSocketServer) => {
           case 'start':
             twilioStreamSid = msg.streamSid;
             console.log(`▶️ Stream started (SID: ${twilioStreamSid})`);
-            streamTTS('Hello')
+            streamTTS('Hello', ws);
             break;
 
           case 'media':

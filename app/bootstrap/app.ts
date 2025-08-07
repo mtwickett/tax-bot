@@ -30,7 +30,6 @@ app.post('/webhook/stream', (req: Request, res: Response) => {
   const connect = response.connect();
   connect.stream({ url: `wss://${process.env.NGROK_DOMAIN}/audiostream` });
   
-  console.log('TwiML:', response.toString());
   res.type('text/xml').send(response.toString());
 });
 
