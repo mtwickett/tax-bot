@@ -6,8 +6,6 @@ export const twilioStream = (wss: WebSocketServer) => {
   wss.on('connection', (ws: WebSocket) => {
     console.log('🔌 Twilio Media WebSocket connected');
 
-    let twilioStreamSid: string | null = null;
-
     ws.on('message', (data) => {
       try {
         const msgStr = typeof data === 'string' ? data : data.toString('utf-8');
@@ -19,9 +17,9 @@ export const twilioStream = (wss: WebSocketServer) => {
             break;
 
           case 'start':
-            twilioStreamSid = msg.streamSid;
+            const twilioStreamSid = msg.streamSid;
             console.log(`▶️ Stream started (SID: ${twilioStreamSid})`);
-            streamTTS('Hello', ws);
+            streamTTS('Hello', ws, twilioStreamSid);
             break;
 
           case 'media':
