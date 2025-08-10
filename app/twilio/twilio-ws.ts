@@ -6,9 +6,12 @@ export const twilioStream = (wss: WebSocketServer) => {
   wss.on('connection', (ws: WebSocket) => {
     console.log('🔌 Twilio Media WebSocket connected');
 
-    ws.on('message', (data) => {
+    let twilioStreamSid: string | null = null;
+
+    ws.on('message', async (message) => {
+      console.log(`Received message: ${message}`);
       try {
-        const msgStr = typeof data === 'string' ? data : data.toString('utf-8');
+        const msgStr = typeof message === 'string' ? message : message.toString('utf-8');
         const msg = JSON.parse(msgStr);
 
         switch (msg.event) {
@@ -17,9 +20,10 @@ export const twilioStream = (wss: WebSocketServer) => {
             break;
 
           case 'start':
-            const twilioStreamSid = msg.streamSid;
+            twilioStreamSid = msg?.start?.streamSid || msg.streamSid;
             console.log(`▶️ Stream started (SID: ${twilioStreamSid})`);
-            streamTTS('Hello', ws, twilioStreamSid);
+            ws.send(JSON.stringify({ event: 'clear', streamSid: twilioStreamSid }));
+            streamTTS('Hello', ws, twilioStreamSid!);
             break;
 
           case 'media':
@@ -30,6 +34,7 @@ export const twilioStream = (wss: WebSocketServer) => {
 
           case 'stop':
             console.log('⛔️ Stream stopped');
+            twilioStreamSid = null;
             // Cleanup: close Deepgram connection, etc.
             break;
 

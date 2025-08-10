@@ -7,10 +7,7 @@ dotenv.config();
 const DEEPGRAM_API_KEY = process.env.DEEPGRAM_API_KEY;
 
 export const streamTTS = (text: string, twilioWs: WebSocket, streamSid: string): void => {
-
-  if (!DEEPGRAM_API_KEY) {
-      throw new Error("Deepgram API key not set in environment.");
-  }
+  if (!DEEPGRAM_API_KEY) throw new Error("Deepgram API key not set in environment.");
 
   const deepgram = createClient(DEEPGRAM_API_KEY);
 
@@ -25,20 +22,25 @@ export const streamTTS = (text: string, twilioWs: WebSocket, streamSid: string):
     
     deepgramConnection.on(LiveTTSEvents.Open, () => {
       console.log('✅ Deepgram TTS connection opened');
-
       deepgramConnection.sendText(text);
       deepgramConnection.flush();
     });
 
     // Send audio chunks to Twilio
-    deepgramConnection.on(LiveTTSEvents.Audio, (data: Buffer) => {
+    deepgramConnection.on(LiveTTSEvents.Audio, (data: Buffer | Uint8Array) => {
       console.log('🔊 Got audio chunk, size:', data.length);
-      const audioPayload = data.toString('base64');
+      const payload =  Buffer.from(data).toString('base64');
 
       twilioWs.send(JSON.stringify({
         event: 'media',
         streamSid,
-        media: { audioPayload },
+        media: { payload },
+      }));
+
+      twilioWs.send(JSON.stringify({
+        event: 'mark',
+        streamSid,
+        mark: { name: `dg-${Date.now()}` },
       }));
     });
 
