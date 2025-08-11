@@ -9,7 +9,6 @@ export const twilioStream = (wss: WebSocketServer) => {
     let twilioStreamSid: string | null = null;
 
     ws.on('message', async (message) => {
-      console.log(`Received message: ${message}`);
       try {
         const msgStr = typeof message === 'string' ? message : message.toString('utf-8');
         const msg = JSON.parse(msgStr);
@@ -21,7 +20,7 @@ export const twilioStream = (wss: WebSocketServer) => {
 
           case 'start':
             twilioStreamSid = msg?.start?.streamSid || msg.streamSid;
-            console.log(`▶️ Stream started (SID: ${twilioStreamSid})`);
+            console.log('▶️ Stream started');
             ws.send(JSON.stringify({ event: 'clear', streamSid: twilioStreamSid }));
             streamTTS('Hello', ws, twilioStreamSid!);
             break;
